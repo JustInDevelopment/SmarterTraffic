@@ -56,9 +56,17 @@ void loop()
     Serial.println(timer.getElapsedTime());
     if(isPeopleDetected())//if it detects the moving people?
     sonic();
-  else{}
+  else{timer.update();
+      long elpse;
+    elpse = timer.getElapsedTime();
+    if (elpse >= 60000)
+    {
+    timer.reset();
+    timer.start();
+    }
+  }
 
-  timer.update();
+
 }
 void printWifiStatus()
 {
@@ -103,6 +111,14 @@ void sonic(){
   Serial.println(carCount);
   int response2 = m2xClient.updateStreamValue(deviceId, streamName2, carCount); 
   delay(100);
+    timer.update();
+    long elpse;
+    elpse = timer.getElapsedTime();
+    if (elpse >= 60000)
+    {
+    timer.reset();
+    timer.start();
+    }
 }
 boolean isPeopleDetected()
 {
