@@ -1,22 +1,27 @@
 const int outPin = 2; // Using FAST_IO
 const int inPin = 3; // Using FAST_IO
+#define PIR_MOTION_SENSOR 4
 
 void setup() {
 
   Serial.begin(115200);
   pinMode(outPin, OUTPUT_FAST);
   pinMode(inPin, INPUT_FAST);
+  pinsInit();
 }
 
 void loop()
 {
 
-//sonicPing use here after pir goes off
+    if(isPeopleDetected())//if it detects the moving people?
+    sonic();
+  else{}
+  
 }
 
-void sonicPing(){
-  long duration, inches, cm;
+void sonic(){
 
+  long duration, inches, cm;
 
   fastDigitalWrite(outPin, LOW);
   waitMicros(2);
@@ -24,7 +29,6 @@ void sonicPing(){
   waitMicros(10);
   fastDigitalWrite(outPin, LOW);
 
-  
   duration = pulseIn(inPin, HIGH); // calls fastGpioPciDigitalRead
 
   // convert the time into a distance
@@ -39,7 +43,18 @@ void sonicPing(){
   
   delay(100);
 }
-
+boolean isPeopleDetected()
+{
+  int sensorValue = digitalRead(PIR_MOTION_SENSOR);
+  if(sensorValue == HIGH)//if the sensor value is HIGH?
+  {
+    return true;//yes,return true
+  }
+  else
+  {
+    return false;//no,return false
+  }
+}
 void waitMicros(int val)
 {
   unsigned long a = micros();
@@ -56,12 +71,17 @@ void waitMicros(int val)
 
 long microsecondsToInches(long microseconds)
 {
- 
   return microseconds / 74 / 2;
 }
 
 long microsecondsToCentimeters(long microseconds)
 {
- 
   return microseconds / 29 / 2;
 }
+
+void pinsInit()
+{
+  pinMode(PIR_MOTION_SENSOR, INPUT);
+}
+
+
