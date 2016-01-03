@@ -58,7 +58,7 @@ void ChangeRed(){
 }
 
 void setup() {
-
+  long TimerSet;
   digitalWrite(RED, HIGH);
   
   SerialUSB.begin(9600); /* USB UART */
@@ -68,9 +68,9 @@ void setup() {
   //SerialCloud.println("Hello, World!"); /* one-time message */
   
   
-  Timer timeinput = new Timer();
+  Timer timeinput;
   timeinput.start();
-  long TimerSet = timeinput.getElapsedTime();
+  TimerSet = timeinput.getElapsedTime();
   
 }
 
