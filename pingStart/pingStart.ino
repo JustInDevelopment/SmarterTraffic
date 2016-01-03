@@ -1,3 +1,5 @@
+#include <timer.h>
+
 #include <jsonlite.h>
 #include <SPI.h>
 #include <WiFi.h>
@@ -6,11 +8,10 @@
 char ssid[] = "NorthHackUp";
 //char pass[] = "";
 int status = WL_IDLE_STATUS;
-//int status = WL_IDLE_STATUS;
-//char feedId[] = "inch";
 char deviceId[] = "2bc378dbef32666c1ff6cc9303607dbc"; 
 char streamName[] = "inch";
 char streamName2[] = "carCount";
+char streamName3[] = "carsPerMin";
 char m2xKey[] = "e11ca108f8b1a036397b8d2920529b5f";
 WiFiClient client;
 M2XStreamClient m2xClient(&client, m2xKey);
@@ -18,7 +19,7 @@ M2XStreamClient m2xClient(&client, m2xKey);
 const int outPin = 2; // Using FAST_IO
 const int inPin = 3; // Using FAST_IO
 #define PIR_MOTION_SENSOR 4
-
+Timer timer;
 void setup() {
     Serial.begin(115200);
   if (WiFi.status() == WL_NO_SHIELD)
@@ -39,17 +40,25 @@ void setup() {
   pinMode(outPin, OUTPUT_FAST);
   pinMode(inPin, INPUT_FAST);
   pinsInit();
+  
+  timer.setTimeout(60000);
+  timer.setCallback(countingCars);
+  timer.start();
 }
 
 int carCount = 0;
+int carsPerMin = 0;
+
+
 void loop()
 {
   
-
+    Serial.println(timer.getElapsedTime());
     if(isPeopleDetected())//if it detects the moving people?
     sonic();
   else{}
-  
+
+  timer.update();
 }
 void printWifiStatus()
 {
@@ -136,4 +145,10 @@ void pinsInit()
   pinMode(PIR_MOTION_SENSOR, INPUT);
 }
 
+
+void countingCars(){
+  int response = m2xClient.updateStreamValue(deviceId, streamName3, carsPerMin);
+  carsPerMin = carCount;
+  carCount =0;
+}
 
