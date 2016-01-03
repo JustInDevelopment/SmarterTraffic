@@ -11,6 +11,10 @@ void setup() {
 void loop()
 {
 
+//sonicPing use here after pir goes off
+}
+
+void sonicPing(){
   long duration, inches, cm;
 
 
